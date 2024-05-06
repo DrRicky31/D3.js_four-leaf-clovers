@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadrifogli con D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .leaf {
+            fill: green;
+            stroke: black;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <svg width="1200" height="1000"></svg>
+
+    <script>
+        d3.json("data.json").then(function(data) {
+            const svg = d3.select("svg");
+
+            // Trova il valore massimo tra tutte le variabili
+            const maxVariableValue = d3.max(data, d => d3.max(Object.values(d)));
+
+            // Funzione per disegnare i quadrifogli
+            function draw(data) {
+                const leaves = svg.selectAll(".leaf")
+                    .data(data)
+                    .enter().append("circle")
+                    .attr("class", "leaf")
+                    .attr("cx", d => (d.var1 / maxVariableValue) * 800) // Scala la coordinata x in base al valore di var1
+                    .attr("cy", d => (d.var2 / maxVariableValue) * 600) // Scala la coordinata y in base al valore di var2
+                    .attr("r", d => (Math.sqrt(d.var3) / maxVariableValue) * 100) // Scala il raggio in base alla radice quadrata di var3
+                    .on("click", function(event, d) {
+                        const selectedVariable = event.button === 0 ? "var1" : "var2";
+                        const newX = selectedVariable === "var1" ? (d.var1 / maxVariableValue) * 1200 : parseFloat(this.getAttribute("cx"));
+                        const newY = selectedVariable === "var2" ? (d.var2 / maxVariableValue) * 1000 : parseFloat(this.getAttribute("cy"));
+
+                        d3.select(this)
+                            .transition()
+                            .duration(1000)
+                            .attr("cx", newX)
+                            .attr("cy", newY);
+                    })
+                    .on("contextmenu", function(event) {
+                        // Previene l'apertura del menu contestuale del browser solo con il tasto destro del mouse
+                        d3.event.preventDefault();
+                    })
+                    .on("dblclick", function(event, d) {
+                        const newX = parseFloat(this.getAttribute("cx"));
+                        const newY = (d.var2 / maxVariableValue) * 1000;
+
+                        d3.select(this)
+                            .transition()
+                            .duration(1000)
+                            .attr("cx", newX)
+                            .attr("cy", newY);
+                    });
+            }
+
+            draw(data);
+        });
+    </script>
+</body>
+</html>
