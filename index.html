@@ -71,10 +71,6 @@
                                 .attr("cx", newX)
                                 .attr("cy", newY);
                         })
-                        .on("contextmenu", function(event) {
-                            // Previene l'apertura del menu contestuale del browser solo con il tasto destro del mouse
-                            d3.event.preventDefault();
-                        })
                         .on("dblclick", function(event, d) {
                             const newX = parseFloat(this.getAttribute("cx"));
                             const newY = (d.var2 / maxVariableValue) * 1000;
