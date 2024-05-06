@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <svg width="1000" height="1000"></svg>
+    <svg width="1600" height="800"></svg>
 
     <script>
         d3.json("data.json").then(function(data) {
@@ -30,16 +30,22 @@
                 .attr("class", "leaf")
                 .each(function(d) {
                     const group = d3.select(this);
-                    const factorScale = 1000;
+                    const factorScaleX = 1500;
+                    const factorScaleY= 800
                     const sizeFactor = 1.5;         // Fattore di scala per la dimensione del quadrifoglio
                     
-                    /* scala per i valori */
-                    var scale =d3.scaleLinear();
-                    scale.domain([0, maxVariableValue])
-                    scale.range([50, 1000])
+                    /* scala per i valori di X */
+                    var scaleX =d3.scaleLinear();
+                    scaleX.domain([0, maxVariableValue])
+                    scaleX.range([50, factorScaleX])
 
-                    const newX = scale(d.var1*Math.random(factorScale))
-                    const newY = scale(d.var1*Math.random(factorScale))
+                    /* scala per i valori di Y */
+                    var scaleY =d3.scaleLinear();
+                    scaleY.domain([0, maxVariableValue])
+                    scaleY.range([50, factorScaleY])
+
+                    const newX = scaleX(d.var1*Math.random(factorScaleX))
+                    const newY = scaleY(d.var1*Math.random(factorScaleY))
 
                     /*Foglia in basso a sinistra */
                     group.append("path")
