@@ -7,7 +7,6 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         .leaf {
-            fill: green;
             stroke: black;
             stroke-width: 2px;
         }
@@ -65,21 +64,31 @@
                             const newX = selectedVariable === "var1" ? (d.var1 / maxVariableValue) * 1200 : parseFloat(this.getAttribute("cx"));
                             const newY = selectedVariable === "var2" ? (d.var2 / maxVariableValue) * 1000 : parseFloat(this.getAttribute("cy"));
 
-                            d3.select(this)
+                            group.selectAll("circle")
                                 .transition()
                                 .duration(1000)
                                 .attr("cx", newX)
                                 .attr("cy", newY);
+
+                            group.selectAll("path")
+                                .transition()
+                                .duration(1000)
+                                .attr("transform", `translate(${newX-50},${newY-45}) scale(${sizeFactor})`)
                         })
                         .on("dblclick", function(event, d) {
                             const newX = parseFloat(this.getAttribute("cx"));
                             const newY = (d.var2 / maxVariableValue) * 1000;
 
-                            d3.select(this)
+                            group.selectAll("circle")
                                 .transition()
                                 .duration(1000)
                                 .attr("cx", newX)
                                 .attr("cy", newY);
+
+                            group.selectAll("path")
+                                .transition()
+                                .duration(1000)
+                                .attr("transform", `translate(${newX-50},${newY-45}) scale(${sizeFactor})`)
                         });
                 });
             }
