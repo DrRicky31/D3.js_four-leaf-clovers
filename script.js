@@ -5,7 +5,7 @@ d3.json("data.json").then(function (data) {
     const maxVariableValue = d3.max(data, d => d3.max(Object.values(d)));
 
     function draw(data) {
-        const leaves = svg.selectAll(".leaf")
+        svg.selectAll(".leaf")
             .data(data)
             .enter()
             .append("g")
@@ -26,6 +26,7 @@ d3.json("data.json").then(function (data) {
                 scaleY.domain([0, maxVariableValue])
                 scaleY.range([50, factorScaleY])
 
+                /* inizializzazione delle coordinate in funzione della variabile var1 */
                 const newX = scaleX(d.var1 * Math.random(factorScaleX))
                 const newY = scaleY(d.var1 * Math.random(factorScaleY))
 
@@ -37,8 +38,8 @@ d3.json("data.json").then(function (data) {
 
                     /* Singolo click, corrisponde a trasformazione lungo asse X */
                     .on("click", function (event, d) {
-                        const newX = scaleX(d.var1);
-                        const newY = parseFloat(this.parentNode.children[4].getAttribute("cy"));
+                        const newX = scaleX(d.var1);                                                    // nuovo valore X ottenuto tramite var1
+                        const newY = parseFloat(this.parentNode.children[4].getAttribute("cy"));        // il valore Y rimane come il precedente
 
                         group.selectAll("circle")           // trasforma il cerchio
                             .transition()
