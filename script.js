@@ -17,14 +17,19 @@ d3.json("data.json").then(function (data) {
                 const sizeFactor = 1.5;         // Fattore di scala per la dimensione del quadrifoglio
 
                 /* scala per i valori di X */
-                var scaleX = d3.scaleLinear();
-                scaleX.domain([0, maxVariableValue])
-                scaleX.range([50, factorScaleX])
+                var scaleX = d3.scaleLinear()
+                    .domain([0, maxVariableValue])
+                    .range([50, factorScaleX]);
 
                 /* scala per i valori di Y */
-                var scaleY = d3.scaleLinear();
-                scaleY.domain([0, maxVariableValue])
-                scaleY.range([50, factorScaleY])
+                var scaleY = d3.scaleLinear()
+                    .domain([0, maxVariableValue])
+                    .range([50, factorScaleY]);
+
+                /* scala per la dimensione */
+                var sizeScale = d3.scaleLinear()
+                    .domain([0, maxVariableValue])
+                    .range([0.5, 2.5]); 
 
                 /* inizializzazione delle coordinate in funzione della variabile var1 */
                 const newX = scaleX(d.var1 * Math.random(factorScaleX))
