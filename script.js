@@ -1,3 +1,105 @@
+function onClick(event, data, scaleX, sizeScale, x, n) {
+    const leavesList = x.parentNode.parentNode.children;
+    for (let i = 0; i < 10; i++) {
+        const b = leavesList[i];
+
+        let newX
+        switch (n) {
+            case 1:
+                newX = scaleX(data[i].var1);
+                break;
+            case 2:
+                newX = scaleX(data[i].var2);
+                break;
+            case 3:
+                newX = scaleX(data[i].var3);
+                break;
+            case 4:
+                newX = scaleX(data[i].var4);
+                break;
+        }
+
+        const newY = parseFloat(b.children[4].getAttribute("cy"));
+
+        d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
+            .transition()
+            .duration(1000)
+            .attr("cx", newX)
+            .attr("cy", newY);
+
+        d3.select(b).select("#var1")             // trasforma la foglia 1
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
+
+        d3.select(b).select("#var2")             // trasforma la foglia 2
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
+
+        d3.select(b).select("#var3")             // trasforma la foglia 3
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
+
+        d3.select(b).select("#var4")             // trasforma la foglia 4
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
+    }
+}
+
+function onDoubleClick(event, data, scaleY, sizeScale, x, n) {
+    const leavesList = x.parentNode.parentNode.children;
+    for (let i = 0; i < 10; i++) {
+        const b = leavesList[i];
+
+        const newX = parseFloat(b.children[4].getAttribute("cx"));
+
+        let newY
+        switch (n) {
+            case 1:
+                newY = scaleY(data[i].var1);
+                break;
+            case 2:
+                newY = scaleY(data[i].var2);
+                break;
+            case 3:
+                newY = scaleY(data[i].var3);
+                break;
+            case 4:
+                newY = scaleY(data[i].var4);
+                break;
+        }
+
+        d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
+            .transition()
+            .duration(1000)
+            .attr("cx", newX)
+            .attr("cy", newY);
+
+        d3.select(b).select("#var1")             // trasforma la foglia 1
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
+
+        d3.select(b).select("#var2")             // trasforma la foglia 2
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
+
+        d3.select(b).select("#var3")             // trasforma la foglia 3
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
+
+        d3.select(b).select("#var4")             // trasforma la foglia 4
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
+    }
+}
+
 d3.json("data.json").then(function (data) {
     const svg = d3.select("svg");
 
@@ -28,7 +130,7 @@ d3.json("data.json").then(function (data) {
                 /* scala per la dimensione */
                 var sizeScale = d3.scaleLinear()
                     .domain([0, maxVariableValue])
-                    .range([0.5, 1.7]); 
+                    .range([0.5, 1.7]);
 
                 /* inizializzazione delle coordinate in funzione della variabile var1 */
                 const newX = scaleX(d.var1 * Math.random(factorScaleX))
@@ -43,77 +145,14 @@ d3.json("data.json").then(function (data) {
 
                     /* Singolo click, corrisponde a trasformazione lungo asse X */
                     .on("click", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = scaleX(data[i].var1);
-                            const newY = parseFloat(b.children[4].getAttribute("cy"))
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
+                        onClick(event, data, scaleX, sizeScale, this, 1);
                     })
 
                     /* Doppio click, corrisponde a trasformazione lungo asse Y */
                     .on("dblclick", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = parseFloat(b.children[4].getAttribute("cx"))
-                            const newY = scaleY(data[i].var1);
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
+                        onDoubleClick(event, data, scaleY, sizeScale, this, 1);
                     });
+
 
                 /* Foglia in alto a destra - var2 */
                 group.append("path")
@@ -124,78 +163,12 @@ d3.json("data.json").then(function (data) {
 
                     /* Singolo click, corrisponde a trasformazione lungo asse X */
                     .on("click", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = scaleX(data[i].var2);
-                            const newY = parseFloat(b.children[4].getAttribute("cy"))
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
-
+                        onClick(event, data, scaleX, sizeScale, this, 2);
                     })
 
                     /* Doppio click, corrisponde a trasformazione lungo asse Y */
                     .on("dblclick", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = parseFloat(b.children[4].getAttribute("cx"))
-                            const newY = scaleY(data[i].var2);
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
-
+                        onDoubleClick(event, data, scaleY, sizeScale, this, 2);
                     });
 
                 /* Foglia in basso a sinistra - var3*/
@@ -207,90 +180,12 @@ d3.json("data.json").then(function (data) {
 
                     /* Singolo click, corrisponde a trasformazione lungo asse X */
                     .on("click", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = scaleX(data[i].var3);
-                            const newY = parseFloat(b.children[4].getAttribute("cy"))
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
-
+                        onClick(event, data, scaleX, sizeScale, this, 3);
                     })
 
                     /* Doppio click, corrisponde a trasformazione lungo asse Y */
                     .on("dblclick", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = parseFloat(b.children[4].getAttribute("cx"))
-                            const newY = scaleY(data[i].var3);
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
-
+                        onDoubleClick(event, data, scaleY, sizeScale, this, 3);
                     });
 
                 /* Foglia in basso a destra - var4 */
@@ -302,78 +197,12 @@ d3.json("data.json").then(function (data) {
 
                     /* Singolo click, corrisponde a trasformazione lungo asse X */
                     .on("click", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = scaleX(data[i].var4);
-                            const newY = parseFloat(b.children[4].getAttribute("cy"))
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
-
+                        onClick(event, data, scaleX, sizeScale, this, 4);
                     })
 
                     /* Doppio click, corrisponde a trasformazione lungo asse Y */
                     .on("dblclick", function (event) {
-                        leavesList = this.parentNode.parentNode.children
-                        for (let i = 0; i < 10; i++) {
-                            let b = leavesList[i]
-
-                            const newX = parseFloat(b.children[4].getAttribute("cx"))
-                            const newY = scaleY(data[i].var4);
-
-                            d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
-                                .transition()
-                                .duration(1000)
-                                .attr("cx", newX)
-                                .attr("cy", newY);
-
-                            d3.select(b).select("#var1")             // trasforma la foglia 1
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var1)})`)
-
-                            d3.select(b).select("#var2")             // trasforma la foglia 2
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var2)})`)
-
-                            d3.select(b).select("#var3")             // trasforma la foglia 3
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var3)})`)
-
-                            d3.select(b).select("#var4")             // trasforma la foglia 4
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", `translate(${newX},${newY}) scale(${sizeScale(data[i].var4)})`)
-                        }
-
+                        onDoubleClick(event, data, scaleY, sizeScale, this, 4);
                     });
 
                 /* cerchio al centro del quadrifoglio */
