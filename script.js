@@ -1,8 +1,16 @@
+/* Funzione lanciata ogni volta che viene registrato un click su una foglia
+ * riceve come parametro tutti i dati necessari, la scala di X, la scala della grandezza
+ * x che corrisponde all'oggetto che è stato clickato (this) 
+ * n che rappresenta il numero della foglia clickata
+ */
 function onClick(event, data, scaleX, sizeScale, x, n) {
+
+    /* ottiene la lista delle foglie a partire dal nodo corrente */
     const leavesList = x.parentNode.parentNode.children;
     for (let i = 0; i < 10; i++) {
         const b = leavesList[i];
 
+        /* aggiorna la coordinata newX in base alla variabile selezionata */
         let newX
         switch (n) {
             case 1:
@@ -21,6 +29,7 @@ function onClick(event, data, scaleX, sizeScale, x, n) {
 
         const newY = parseFloat(b.children[4].getAttribute("cy"));
 
+        /* aggiornamento delle posizioni degli oggetti */
         d3.select(b).select("circle")           // Trasforma il cerchio all'interno dell'elemento b
             .transition()
             .duration(1000)
@@ -49,13 +58,20 @@ function onClick(event, data, scaleX, sizeScale, x, n) {
     }
 }
 
+/* Funzione lanciata ogni volta che viene registrato un doubleClick su una foglia
+ * riceve come parametro tutti i dati necessari, la scala di Y, la scala della grandezza
+ * x che corrisponde all'oggetto che è stato clickato (this) 
+ * n che rappresenta il numero della foglia clickata
+ */
 function onDoubleClick(event, data, scaleY, sizeScale, x, n) {
+    /* ottiene la lista delle foglia a partire dal nodo corrente */
     const leavesList = x.parentNode.parentNode.children;
     for (let i = 0; i < 10; i++) {
         const b = leavesList[i];
 
         const newX = parseFloat(b.children[4].getAttribute("cx"));
 
+        /* aggiorna la coordinata new Y in base alla varibile selezionata */
         let newY
         switch (n) {
             case 1:
@@ -78,6 +94,7 @@ function onDoubleClick(event, data, scaleY, sizeScale, x, n) {
             .attr("cx", newX)
             .attr("cy", newY);
 
+        /* aggiornamento delle posizioni degli oggetti */
         d3.select(b).select("#var1")             // trasforma la foglia 1
             .transition()
             .duration(1000)
@@ -114,27 +131,35 @@ d3.json("data.json").then(function (data) {
             .attr("class", "leaf")
             .each(function (d) {
                 const group = d3.select(this);
-                const factorScaleX = 1500;
-                const factorScaleY = 800
+                const screenX = window.screen.width * 0.8           // ottiene dimensioni dello schermo
+                const screenY = window.screen.height * 0.8
 
                 /* scala per i valori di X */
                 var scaleX = d3.scaleLinear()
                     .domain([0, maxVariableValue])
-                    .range([50, factorScaleX]);
+                    .range([50, screenX-50]);
 
                 /* scala per i valori di Y */
                 var scaleY = d3.scaleLinear()
                     .domain([0, maxVariableValue])
-                    .range([50, factorScaleY]);
+                    .range([50, screenY-50]);
 
                 /* scala per la dimensione */
                 var sizeScale = d3.scaleLinear()
                     .domain([0, maxVariableValue])
                     .range([0.5, 1.7]);
 
+                /* scala per inizializzazione randomica delle posizioni */
+                var randomScaleX = d3.scaleLinear()
+                    .domain([0,1])
+                    .range([50,screenX-50])
+                var randomScaleY = d3.scaleLinear()
+                    .domain([0,1])
+                    .range([50,screenY-50])
+
                 /* inizializzazione delle coordinate in funzione della variabile var1 */
-                const newX = scaleX(d.var1 * Math.random(factorScaleX))
-                const newY = scaleY(d.var1 * Math.random(factorScaleY))
+                const newX = randomScaleX(Math.random(screenX))
+                const newY = randomScaleY(Math.random(screenY))
 
                 /* Foglia in alto a sinistra - var1 */
                 group.append("path")
@@ -217,3 +242,20 @@ d3.json("data.json").then(function (data) {
 
     draw(data);
 });
+
+// Funzione per impostare le dimensioni dell'elemento SVG
+function setSVGSize() {
+    const svg = document.getElementById("dynamic-svg");
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+
+    // Imposta le dimensioni in base allo schermo
+    svg.setAttribute("width", screenWidth * 0.8); // 80% della larghezza dello schermo
+    svg.setAttribute("height", screenHeight * 0.8); // 80% dell'altezza dello schermo
+}
+
+// Chiama la funzione al caricamento della pagina
+window.onload = setSVGSize;
+
+// Aggiungi un listener per ridimensionare SVG al ridimensionamento della finestra
+window.onresize = setSVGSize;
